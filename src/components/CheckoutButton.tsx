@@ -1,0 +1,3 @@
+"use client"; import { useState } from "react";
+export default function CheckoutButton(){const [msg,setMsg]=useState("");async function go(){setMsg("Contacting checkout…");const r=await fetch("/api/checkout",{method:"POST"});const d=await r.json(); if(d.url){window.location.href=d.url;} else setMsg(d.message||"Checkout unavailable.");}
+return(<div><button onClick={go} className="rounded-full bg-amber-400 text-black px-7 py-3 font-bold hover:bg-amber-300">Subscribe to Premium (placeholder pricing)</button>{msg&&<p className="mt-3 text-sm text-amber-200 max-w-xl">{msg}</p>}<p className="mt-2 text-xs text-zinc-500">Mock mode: no Stripe keys configured, so no real payment is taken. With keys, this redirects to Stripe Checkout.</p></div>)}

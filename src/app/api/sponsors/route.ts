@@ -1,0 +1,3 @@
+import { NextResponse } from "next/server"; import { addSponsor, readSponsors } from "@/lib/sponsors";
+export async function POST(req:Request){const b=await req.json(); if(!b.business||!b.contact||!b.email) return NextResponse.json({error:"business, contact and email required"},{status:400}); const item=addSponsor({business:b.business,contact:b.contact,email:b.email,website:b.website||"",tier:b.tier||"Not sure yet",message:b.message||""}); return NextResponse.json({ok:true,item});}
+export async function GET(){return NextResponse.json({sponsors:readSponsors()});} // NOTE: protect this before launch (admin auth stub)
