@@ -17,7 +17,8 @@
 | `/about` | About Tru (placeholder bio — replace with real story/photo/shop details) |
 | `/pricing` | Free vs Premium + sponsor slots (placeholder/example) + sponsor inquiry form |
 | `/premium` | Gated premium guides (Grokbot workflows, prompt library, automation blueprints) |
-| `/admin/sponsors` | **Admin stub (no auth yet!)** — review sponsor requests, all `pending_approval` |
+| `/admin/sponsors` | **Admin (password-gated)** — review sponsor requests, all `pending_approval` |
+| `/admin/login` | Admin sign-in (password → httpOnly session cookie, 7 days) |
 | `/checkout/success`, `/checkout/cancel` | Post-checkout pages |
 | `POST /api/sponsors` | Stores sponsor inquiry in `data/sponsors.json` |
 | `POST /api/checkout` | Stripe Checkout session, or mock redirect when keys absent |
@@ -32,7 +33,7 @@ cp .env.example .env.local   # optional in mock mode; fill later for Stripe test
 npm run dev                  # http://localhost:3000
 npm run build && npm start   # production build check
 ```
-No env vars are required to run in mock mode.
+No env vars are required to run in mock mode — except `ADMIN_PASSWORD` if you want to open the admin area (see Admin auth below).
 
 ## Success stories — sources (verified Oct 2026, do not fabricate additions)
 All 12 live in `src/data/stories.ts` with source name/date/URL on each card:
@@ -51,8 +52,16 @@ All 12 live in `src/data/stories.ts` with source name/date/URL on each card:
 
 ## Sponsors (intake/display only — no charging)
 - Form on `/pricing` → `POST /api/sponsors` → appended to `data/sponsors.json` with `status: "pending_approval"`.
-- `/admin/sponsors` lists requests. **Auth is a stub** — before launch add real protection (password/session/NextAuth/Vercel) or anyone with the URL could view emails.
+- `/admin/sponsors` lists requests and is **password-gated** (see Admin auth below). Anyone without the session is redirected to `/admin/login`, and `GET /api/sponsors` returns 401 unauthenticated.
 - Placeholder/example sponsor slots are clearly labelled AVAILABLE/EXAMPLE. Nothing auto-publishes; Tru must manually approve and add a sponsor to the site.
+
+## Admin auth (sponsor admin)
+
+- **Env var:** `ADMIN_PASSWORD` — the only secret needed. Never hardcode it; never commit a real value.
+- **How it works:** `src/proxy.ts` (Next.js 16 proxy, formerly middleware) redirects unauthenticated `/admin/*` requests to `/admin/login`. Submitting the password to `POST /api/admin/login` checks it server-side (timing-safe compare) and sets an `learnairight_admin` **httpOnly** cookie containing an HMAC-SHA256-signed expiry token derived from `ADMIN_PASSWORD` (the cookie never contains the password). The admin page and `GET /api/sponsors` re-verify that cookie server-side before any sponsor data is read. `POST /api/admin/logout` clears it. Sessions last 7 days.
+- **Fail closed:** if `ADMIN_PASSWORD` is unset, `/admin/login` shows "Admin not configured", `/admin/sponsors` shows no data, and `GET /api/sponsors` returns 503. Sponsor emails cannot leak.
+- **Local dev:** put `ADMIN_PASSWORD=<strong-random>` in `.env.local` (gitignored; generate with `openssl rand -base64 32`), restart `npm run dev`, then visit http://localhost:3000/admin/sponsors and sign in.
+- **Production (Vercel):** set `ADMIN_PASSWORD` in Project → Settings → Environment Variables (Production) **before** real traffic, then redeploy. This is a simple single-password gate for the stub stage — upgrade to real user auth (e.g. NextAuth) before scaling.
 
 ## Premium + Stripe (placeholder/mock until Tru adds keys)
 - `src/lib/stripe.ts` reads `STRIPE_SECRET_KEY` / `STRIPE_PRICE_ID`. `sk_test_placeholder…` values are treated as **not configured** → mock mode.
@@ -60,25 +69,25 @@ All 12 live in `src/data/stories.ts` with source name/date/URL on each card:
 - To go live (Tru only): create Stripe account + recurring Product/Price, put TEST keys in `.env.local`, `stripe listen --forward-to localhost:3000/api/stripe/webhook`, test, then implement webhook entitlement (replace cookie with DB-backed user entitlements — TODOs marked in `src/app/api/stripe/webhook/route.ts`), add real auth, then swap to live keys.
 
 ## Deploy (when Tru explicitly approves — do NOT deploy before)
-1. Push to a private GitHub repo. 2. Import into Vercel, framework = Next.js. 3. Set env vars from `.env.example` in Vercel (production). 4. Add custom domain in Vercel + DNS. 5. Point Stripe webhook to `https://YOURDOMAIN/api/stripe/webhook`. 6. Protect `/admin/*`. Managed DB (e.g. Postgres/Supabase) should replace `data/sponsors.json` before real traffic.
+1. Push to a private GitHub repo. 2. Import into Vercel, framework = Next.js. 3. Set env vars from `.env.example` in Vercel (production). 4. Add custom domain in Vercel + DNS. 5. Point Stripe webhook to `https://YOURDOMAIN/api/stripe/webhook`. 6. Set `ADMIN_PASSWORD` in Vercel env vars (gates `/admin/*`; see Admin auth). Managed DB (e.g. Postgres/Supabase) should replace `data/sponsors.json` before real traffic.
 
 ## Decisions Tru needs to make
 - **Branding:** name is now **LearnAIRight / "Learn AI Right — with Tru"** (applied Oct 2026). Still to decide: final logo/typeface, Tru's photo, shop name & booking link. Colors: charcoal + amber retained as the LearnAIRight palette (see top of README). Domain/social handles NOT yet registered — see availability research reported to Tru 16 Oct 2026; register learnairight.com (+ .ai defensive) and claim handles only on Tru's approval.
 - **Pricing:** Premium $/mo & $/yr (currently $9/$79 placeholders) and sponsor rates (currently $150/$75/$250 placeholders).
 - **Domain + hosting:** domain choice; Vercel assumed.
 - **Stripe:** when to create account, test vs live keys, tax/refund policy.
-- **Admin/auth & database** choice before public launch; legal pages (privacy/terms) still needed.
+- **Admin/auth & database:** single-password admin gate is implemented (see Admin auth); decide later whether to upgrade to full user auth. Managed DB choice still needed before public launch; legal pages (privacy/terms) still needed.
 
 ## File structure
 ```
-src/app/{page,tips,stories,about,pricing,premium,admin/sponsors,checkout/{success,cancel},api/{sponsors,checkout,stripe/webhook,premium/mock-activate}}
+src/app/{page,tips,stories,about,pricing,premium,admin/{login,sponsors},checkout/{success,cancel},api/{sponsors,admin/{login,logout},checkout,stripe/webhook,premium/mock-activate}}
 src/components/{Nav,Footer,SponsorForm,CheckoutButton,MockUnlock}.tsx
-src/data/{stories,tips}.ts   src/lib/{stripe,sponsors}.ts   data/sponsors.json   .env.example
+src/data/{stories,tips}.ts   src/lib/{stripe,sponsors,admin-auth}.ts   src/proxy.ts   data/sponsors.json   .env.example
 ```
 
 ## Push to GitHub (Tru — one-time, after you create your GitHub account)
 
-This repo is initialized locally with an initial commit, but **not pushed yet** — no GitHub account was logged in on this machine, and creating an account needs your email and a password only you should know.
+This repo has been pushed to https://github.com/trumanlively-coder/learnairight (public, `main`). The instructions below are kept for reference / a fresh machine.
 
 1. Create a free account at https://github.com/signup (skip this if you already have one).
 2. In a terminal on this machine / in this project folder, log in once:
