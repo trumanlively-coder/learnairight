@@ -19,7 +19,7 @@ export function TrialButton({ loggedIn }: { loggedIn: boolean }) {
   return (<span className="inline-flex flex-col gap-1"><button className={btn} disabled={busy} onClick={start}>{busy ? "Starting…" : "Start your free trial"}</button>{msg && <span className="text-xs text-emerald-300">{msg}</span>}</span>);
 }
 
-export function BuyButtons({ slug, loggedIn }: { slug: string; loggedIn: boolean }) {
+export function BuyButtons({ slug, loggedIn, stripeConfigured = false }: { slug: string; loggedIn: boolean; stripeConfigured?: boolean }) {
   const router = useRouter(); const [msg, setMsg] = useState(""); const [busy, setBusy] = useState("");
   async function buy(plan: "single" | "bundle") {
     if (!loggedIn) { router.push("/signup?next=/modules"); return; }
@@ -28,6 +28,7 @@ export function BuyButtons({ slug, loggedIn }: { slug: string; loggedIn: boolean
     const d = await r.json().catch(() => ({}));
     setBusy("");
     if (!r.ok) { setMsg(d.error || "Purchase failed."); return; }
+    if (d.url) { setMsg("Opening Stripe test checkout…"); window.location.href = d.url; return; }
     setMsg(`✅ Mock purchase recorded — no charge was made. ${plan === "bundle" ? "All-Access (incl. Premium) is unlocked." : "This module is unlocked."}`);
     router.refresh();
   }
@@ -37,7 +38,7 @@ export function BuyButtons({ slug, loggedIn }: { slug: string; loggedIn: boolean
         <button className={btn} disabled={!!busy} onClick={() => buy("single")}>{busy === "single" ? "…" : "Buy Single Pass — $29"}</button>
         <button className={ghost} disabled={!!busy} onClick={() => buy("bundle")}>{busy === "bundle" ? "…" : "All-Access Bundle — $99"}</button>
       </span>
-      <span className="text-xs text-zinc-500">Mock checkout — no card, no charge. Tru connects Stripe before launch.</span>
+      {stripeConfigured ? (<span className="text-xs text-zinc-500">Stripe TEST mode — use card 4242 4242 4242 4242, no real charge.</span>) : (<span className="text-xs text-zinc-500">Checkout not configured yet — mock unlock, no card, no charge.</span>)}
       {msg && <span className="text-xs text-emerald-300">{msg}</span>}
     </span>
   );

@@ -5,8 +5,20 @@ import { notFound } from "next/navigation";
 import { BUNDLE_PRICE, SINGLE_PRICE, getModule, modules } from "@/data/modules";
 import { accessLabel, canAccessModule, getCurrentUser } from "@/lib/user-auth";
 import { BuyButtons, TrialButton } from "@/components/ModuleActions";
+import { isStripeModulesConfigured } from "@/lib/stripe";
 import FirstWinChecklist from "@/components/FirstWinChecklist";
 
+function VideoEmbed({ embedUrl, title, channel, duration, watchUrl, lessonLabel }: { embedUrl: string; title: string; channel: string; duration?: string; watchUrl?: string; lessonLabel?: string }) {
+  return (
+    <div>
+      <div className="relative aspect-video overflow-hidden rounded-3xl border border-white/10 bg-black">
+        <iframe className="absolute inset-0 h-full w-full" src={embedUrl} title={title} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
+      </div>
+      {lessonLabel && <p className="mt-2 text-xs font-bold tracking-widest text-amber-400">{lessonLabel}</p>}
+      <p className="mt-1 text-xs text-zinc-500">Video: “{title}” — {channel}{duration ? ` · ${duration}` : ""} (YouTube){watchUrl ? <> · <a className="underline" href={watchUrl} target="_blank" rel="noreferrer">Watch on YouTube</a></> : null}</p>
+    </div>
+  );
+}
 function VideoPlaceholder({ n, lessonLabel }: { n: number; lessonLabel?: string }) {
   return (
     <div className="flex aspect-video items-center justify-center rounded-3xl border border-dashed border-amber-400/40 bg-white/5 text-center px-6">
@@ -38,7 +50,13 @@ async function ModuleInner({ params }: { params: Promise<{ slug: string }> }) {
 
       {unlocked ? (
         <div className="mt-8 space-y-8">
-          {Array.from({ length: mod.videoSlots }, (_, i) => <VideoPlaceholder key={i} n={i + 1} lessonLabel={isFree && i === 0 ? "LESSON 1 — INSTANT ACCESS · NO ACCOUNT NEEDED" : isFree ? `LESSON ${i + 1} — FREE` : undefined} />)}
+          {Array.from({ length: mod.videoSlots }, (_, i) => (
+            isFree && i === 0 && mod.videoEmbedUrl ? (
+              <VideoEmbed key={i} embedUrl={mod.videoEmbedUrl} title={mod.videoTitle || mod.title} channel={mod.videoChannel || "YouTube"} duration={mod.videoDuration} watchUrl={mod.videoWatchUrl} lessonLabel="LESSON 1 — INSTANT ACCESS · NO ACCOUNT NEEDED" />
+            ) : (
+              <VideoPlaceholder key={i} n={i + 1} lessonLabel={isFree && i === 0 ? "LESSON 1 — INSTANT ACCESS · NO ACCOUNT NEEDED" : isFree ? `LESSON ${i + 1} — FREE` : undefined} />
+            )
+          ))}
           {mod.sections.map((s, idx) => (
             <div key={s.heading} className="space-y-8">
               <section className="rounded-3xl border border-white/10 p-6">
@@ -91,10 +109,10 @@ async function ModuleInner({ params }: { params: Promise<{ slug: string }> }) {
           </div>
           <div className="rounded-3xl border border-amber-400/30 p-6">
             <h2 className="text-2xl font-bold">🔒 Unlock this module</h2>
-            <p className="mt-2 text-zinc-300">The full written guide, video lessons, and the downloadable exercise unlock with a free trial (Module 2 only), a Single Module Pass (${SINGLE_PRICE}), or the All-Access Bundle (${BUNDLE_PRICE}, includes Premium). Prices are placeholders; checkout is mocked — no card asked, no charge.</p>
+            {isStripeModulesConfigured ? (<p className="mt-2 text-zinc-300">The full written guide, video lessons, and the downloadable exercise unlock with a free trial (Module 2 only), a Single Module Pass (${SINGLE_PRICE}), or the All-Access Bundle (${BUNDLE_PRICE}, includes Premium). Stripe TEST mode — use test card 4242 4242 4242 4242, no real charge.</p>) : (<p className="mt-2 text-zinc-300">The full written guide, video lessons, and the downloadable exercise unlock with a free trial (Module 2 only), a Single Module Pass (${SINGLE_PRICE}), or the All-Access Bundle (${BUNDLE_PRICE}, includes Premium). Checkout not configured yet — mock unlock, no card, no charge.</p>)}
             <div className="mt-5 flex flex-wrap gap-3 items-start">
               {slug === "prompting-like-a-manager" && <TrialButton loggedIn={Boolean(user)} />}
-              <BuyButtons slug={mod.slug} loggedIn={Boolean(user)} />
+              <BuyButtons slug={mod.slug} loggedIn={Boolean(user)} stripeConfigured={isStripeModulesConfigured} />
               {!user && <Link href={`/signup?next=/modules/${mod.slug}`} className="rounded-full border border-white/20 px-5 py-2.5 text-sm font-bold">Create free account first</Link>}
             </div>
           </div>

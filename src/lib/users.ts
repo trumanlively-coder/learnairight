@@ -12,8 +12,10 @@ export type User = {
 };
 export type Subscriber = {
   id: string; email: string; plan: string; // trial | single:<slug> | bundle | premium
-  amount: number; // USD, mock
-  status: string; startsAt: string; expiresAt: string | null; createdAt: string;
+  amount: number; // USD
+  status: string; // active_mock | paid_test | trial_active | ...
+  startsAt: string; expiresAt: string | null; createdAt: string;
+  stripeSessionId?: string; // for idempotent Stripe grants (webhook + success-page verify)
 };
 const usersFile = path.join(process.cwd(), "data", "users.json");
 const subsFile = path.join(process.cwd(), "data", "subscribers.json");
@@ -54,6 +56,22 @@ export function recordPurchase(user: User, plan: "single" | "bundle", slug: stri
   saveUser(updated);
   addSubscriber({ email: user.email, plan: plan === "bundle" ? "bundle" : `single:${slug}`, amount, status: "active_mock", startsAt: new Date().toISOString(), expiresAt: null });
   return updated;
+}
+/**
+ * Idempotent Stripe TEST grant: safe to call from BOTH the webhook and the
+ * success-page session verification — the stripeSessionId dedupes.
+ * amountCents: 2900 (single) / 9900 (bundle), recorded as USD in subscribers.
+ */
+export function grantStripePurchaseByEmail(email: string, plan: "single" | "bundle", slug: string | null, amountCents: number, sessionId: string): { user: User | null; alreadyGranted: boolean } {
+  const user = findUserByEmail(String(email || ""));
+  if (!user) return { user: null, alreadyGranted: false };
+  if (sessionId && readSubscribers().some((s) => s.stripeSessionId === sessionId)) return { user, alreadyGranted: true };
+  const updated = plan === "bundle"
+    ? { ...user, bundle: true }
+    : { ...user, entitlements: [...new Set([...user.entitlements, ...(slug ? [slug] : [])])] };
+  saveUser(updated);
+  addSubscriber({ email: updated.email, plan: plan === "bundle" ? "bundle" : `single:${slug}`, amount: amountCents / 100, status: "paid_test", startsAt: new Date().toISOString(), expiresAt: null, stripeSessionId: sessionId || undefined });
+  return { user: updated, alreadyGranted: false };
 }
 export function saveFirstWinProgress(user: User, steps: number[], prompt: string): User {
   const cleanPrompt = String(prompt || "").slice(0, 2000);

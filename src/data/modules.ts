@@ -3,6 +3,8 @@ export type TrainingModule = {
   slug: string; order: number; title: string; difficulty: string; duration: string;
   summary: string; outcomes: string[]; videoSlots: number;
   paid: boolean; sections: ModuleSection[]; exerciseTitle: string; exercise: string; starterPrompt?: string;
+  // Optional real embed for Lesson 1 only (Module 1). Other slots stay placeholders.
+  videoEmbedUrl?: string; videoTitle?: string; videoChannel?: string; videoDuration?: string; videoWatchUrl?: string;
 };
 export const TRIAL_MODULE_SLUG = "prompting-like-a-manager";
 export const SINGLE_PRICE = 29; // placeholder USD
@@ -13,6 +15,11 @@ export const modules: TrainingModule[] = [
     summary: "Start here. What an AI assistant actually is, how to ask your first useful questions, and how to spot a bad answer before it costs you time.",
     outcomes: ["Explain in plain English what an AI assistant can and cannot do", "Write a clear first prompt with context, task, and format", "Check an AI answer before you act on it"],
     videoSlots: 2, paid: false,
+    videoEmbedUrl: "https://www.youtube-nocookie.com/embed/qYNweeDHiyU",
+    videoTitle: "AI, Machine Learning, Deep Learning and Generative AI Explained",
+    videoChannel: "IBM Technology",
+    videoDuration: "10:00",
+    videoWatchUrl: "https://www.youtube.com/watch?v=qYNweeDHiyU",
     sections: [
       { heading: "1. What AI is (and is not)", body: "An AI assistant predicts helpful text from patterns it learned — it does not look things up live unless a tool is connected, it can be confidently wrong, and it does not know your business until you tell it. Treat it like a fast, eager new hire: give it context, check its work, and never hand it the final say on money, health, legal, or safety calls.", steps: ["Ask it to explain a topic you already know well, then grade the answer", "Ask the same question with and without context and compare", "Write down three tasks in your week where a rough first draft would save time"] },
       { heading: "2. Your first good prompt", body: "Weak prompts get weak answers. A reliable starter shape is: role + situation + task + format. For example: 'You are an experienced shop manager. I run a small barbershop. Write a short Instagram caption for a Saturday walk-in special. Keep it under 40 words, friendly, no hype.'", steps: ["Pick one real task you did this week", "Rewrite it with role, situation, task, and format", "Ask for two versions and pick the better one — then say why"] },
