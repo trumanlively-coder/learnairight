@@ -21,9 +21,10 @@ async function ModulesInner() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-14">
       {isStripeModulesConfigured ? (<p className="text-amber-400 font-bold tracking-widest text-xs">TRAINING MODULES ✦ STRIPE TEST MODE — TEST CARD ONLY, NO REAL CHARGES</p>) : (<p className="text-amber-400 font-bold tracking-widest text-xs">TRAINING MODULES ✦ MOCK CHECKOUT — NO REAL CHARGES</p>)}
-      <h1 className="mt-3 text-5xl font-black">Learn AI right, one module at a time.</h1>
-      <p className="mt-3 text-zinc-400 max-w-2xl">Module 1 is free for everyone — start Lesson 1 instantly, no account needed. Create a free account only to download its exercise, save your progress, or start the 7-day trial of Module 2. No credit card, ever, until you choose to buy.</p>
+      <h1 className="mt-3 text-5xl font-black">From scattered prompting to repeatable workflows.</h1>
+      <p className="mt-3 text-zinc-400 max-w-2xl">A workflow-first training ladder for teams and independent professionals. Module 1 is free and open — start Lesson 1 instantly, no account needed. Create a free account only to download the exercise, save progress, or start the 7-day trial of Module 2. No credit card until a purchase is chosen. Managers can use Module 1 to assess depth, then request a team quote.</p>
 
+      <p className="mt-4 text-sm text-zinc-500">Built for practitioners · Workflow-first · Measured outcomes</p>
       <div className="mt-6 flex flex-wrap items-center gap-3 text-sm">
         {user ? (<><span className="rounded-full bg-white/5 border border-white/10 px-4 py-2">Signed in as <b>{user.email}</b>{user.bundle ? " · All-Access" : ""}{trial ? ` · Trial until ${new Date(user.trialEndsAt!).toLocaleDateString()}` : ""}</span><LogoutButton /></>)
         : (<><Link href="/signup" className="rounded-full bg-amber-400 px-5 py-2.5 font-bold text-black">Create free account</Link><Link href="/login" className="rounded-full border border-white/20 px-5 py-2.5 font-bold">Log in</Link></>)}
@@ -38,11 +39,17 @@ async function ModulesInner() {
         </section>
       )}
       <div className="mt-10 grid md:grid-cols-3 gap-4">
-        <div className="rounded-3xl border border-emerald-400/30 p-6"><p className="text-xs font-bold text-emerald-300">FREE TRIAL</p><h2 className="mt-2 text-2xl font-bold">Module 1 free + Module 2 for 7 days</h2><p className="mt-2 text-sm text-zinc-400">Module 1 (&ldquo;AI for Beginners&rdquo;) is open to everyone — Lesson 1 is instant, no account. Create a free account and start the trial to unlock Module 2 free for seven days.</p><div className="mt-4"><TrialButton loggedIn={Boolean(user)} /></div></div>
-        <div className="rounded-3xl border border-white/10 p-6"><p className="text-xs font-bold text-amber-400">SINGLE MODULE PASS</p><h2 className="mt-2 text-2xl font-bold">${SINGLE_PRICE} <span className="text-sm text-zinc-400">/ module (placeholder)</span></h2><p className="mt-2 text-sm text-zinc-400">Unlock one paid module of your choice, forever in this mock store. Buy from any module page below.</p></div>
-        <div className="rounded-3xl border border-amber-400/40 p-6"><p className="text-xs font-bold text-amber-400">ALL-ACCESS BUNDLE ✦ BEST VALUE</p><h2 className="mt-2 text-2xl font-bold">${BUNDLE_PRICE} <span className="text-sm text-zinc-400">(placeholder)</span></h2><p className="mt-2 text-sm text-zinc-400">Every module, every future module in this ladder, plus all LearnAIRight Premium guides.</p><div className="mt-4"><BuyButtons slug={modules[1].slug} loggedIn={Boolean(user)} stripeConfigured={isStripeModulesConfigured} /></div></div>
+        <div className="rounded-3xl border border-emerald-400/30 p-6"><p className="text-xs font-bold text-emerald-300">FREE TRIAL</p><h2 className="mt-2 text-2xl font-bold">Module 1 free + Module 2 for 7 days</h2><p className="mt-2 text-sm text-zinc-400">Module 1, &ldquo;AI for Beginners,&rdquo; is the foundations and diagnostic entry point — open to everyone, Lesson 1 instant with no account. Create a free account and start the trial to unlock Module 2 free for seven days.</p><div className="mt-4"><TrialButton loggedIn={Boolean(user)} /></div></div>
+        <div className="rounded-3xl border border-white/10 p-6"><p className="text-xs font-bold text-amber-400">SINGLE MODULE PASS</p><h2 className="mt-2 text-2xl font-bold">${SINGLE_PRICE} <span className="text-sm text-zinc-400">/ module</span></h2><p className="mt-2 text-sm text-zinc-400">One paid module, selected for a specific workflow gap. Purchase from any module page below.</p></div>
+        <div className="rounded-3xl border border-amber-400/40 p-6"><p className="text-xs font-bold text-amber-400">ALL-ACCESS BUNDLE ✦ BEST VALUE</p><h2 className="mt-2 text-2xl font-bold">${BUNDLE_PRICE} <span className="text-sm text-zinc-400">(placeholder)</span></h2><p className="mt-2 text-sm text-zinc-400">All five modules plus LearnAIRight Premium guides. At $99, All-Access is also the per-seat license option for teams — volume arrangements by quote (see team section below).</p><div className="mt-4"><BuyButtons slug={modules[1].slug} loggedIn={Boolean(user)} stripeConfigured={isStripeModulesConfigured} /></div></div>
       </div>
 
+      <section id="team-quote" className="mt-12 rounded-3xl border border-amber-400/40 bg-amber-400/5 p-8">
+        <p className="text-xs font-bold tracking-widest text-amber-400">TEAM LICENSES · FOR TEAMS OF 5+</p>
+        <h2 className="mt-2 text-3xl font-black">Request a team quote.</h2>
+        <p className="mt-3 max-w-3xl text-sm text-zinc-300">All-Access at $99 per seat is the standard per-seat option. For teams of 5 or more, request a quote covering seat volume, a shared rollout starting with free Module 1, and a common review standard across the team. Submit the inquiry form on the pricing page, select &ldquo;Not sure yet,&rdquo; and state team size and training goal in the message field. Form submissions are reviewed before any arrangement is confirmed; no payment is collected through that form.</p>
+        <div className="mt-5 flex flex-wrap gap-3"><Link href="/pricing#sponsor-inquiry" className="rounded-full bg-amber-400 px-6 py-3 text-sm font-bold text-black">Request a team quote →</Link><Link href="/modules/ai-for-beginners" className="rounded-full border border-white/20 px-6 py-3 text-sm font-bold">Assess Module 1 first</Link></div>
+      </section>
       <div className="mt-12 space-y-4">
         {modules.map((m) => (
           <article key={m.slug} className="rounded-3xl border border-white/10 p-6 flex flex-col md:flex-row md:items-center gap-4 justify-between">
@@ -68,7 +75,7 @@ async function ModulesInner() {
           </article>
         ))}
       </div>
-      {isStripeModulesConfigured ? (<p className="mt-8 text-xs text-zinc-500">Stripe TEST mode is configured — checkout opens Stripe with test card 4242 4242 4242 4242, no real money moves. Remaining video slots are placeholders until Tru adds real video URLs.</p>) : (<p className="mt-8 text-xs text-zinc-500">Checkout not configured yet — mock unlock, no card, no charge. Remaining video slots are placeholders until Tru adds real video URLs.</p>)}
+      {isStripeModulesConfigured ? (<p className="mt-8 text-xs text-zinc-500">Stripe TEST mode is configured — checkout opens Stripe with test card 4242 4242 4242 4242, no real money moves. Remaining video slots are clearly labelled placeholders until real video URLs are added.</p>) : (<p className="mt-8 text-xs text-zinc-500">Checkout not configured yet — mock unlock, no card, no charge. Remaining video slots are clearly labelled placeholders until real video URLs are added.</p>)}
     </div>
   );
 }

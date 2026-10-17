@@ -44,7 +44,12 @@ async function ModuleInner({ params }: { params: Promise<{ slug: string }> }) {
       <p className="mt-3 text-zinc-400">{mod.summary}</p>
       {isFree && <p className="mt-4 rounded-2xl border border-emerald-400/30 bg-emerald-400/5 px-4 py-3 text-sm text-emerald-200">Start Lesson 1 instantly — no account needed. Only the exercise download and saved progress need a free account. No credit card, ever, until you choose to buy.</p>}
       <div className="mt-6 rounded-3xl border border-white/10 p-6">
-        <h2 className="font-bold">What you&rsquo;ll be able to do</h2>
+        <p className="text-xs font-bold tracking-widest text-amber-400">BUILT FOR PRACTITIONERS · WORKFLOW-FIRST · MEASURED OUTCOMES</p>
+        <p className="mt-3 text-sm text-zinc-300"><b>Who this serves:</b> {mod.audience}</p>
+        <p className="mt-2 text-sm text-zinc-300"><b>Outcome to track:</b> {mod.measure}</p>
+      </div>
+      <div className="mt-6 rounded-3xl border border-white/10 p-6">
+        <h2 className="font-bold">What completion looks like</h2>
         <ul className="mt-2 list-disc pl-5 space-y-1 text-zinc-300">{mod.outcomes.map((o) => <li key={o}>{o}</li>)}</ul>
       </div>
 
@@ -72,7 +77,7 @@ async function ModuleInner({ params }: { params: Promise<{ slug: string }> }) {
           ))}
           <section className="rounded-3xl border border-amber-400/30 p-6">
             <h2 className="text-2xl font-bold">{mod.exerciseTitle}</h2>
-            <p className="mt-2 text-zinc-300">Do this one for real — it is where the learning sticks.{isFree ? " You can start the exercise from the guide above with no account; the downloadable worksheet is free with an account." : " Download the worksheet, work through it, and keep it with your notes."}</p>
+            <p className="mt-2 text-zinc-300">Apply the exercise to a live task from the current workload. Record the baseline, the result, and the review outcome so progress stays measurable.{isFree ? " The exercise can be started from the guide above with no account; the downloadable worksheet is free with an account." : " Download the worksheet, complete it against a real task, and retain it with the workflow record."}</p>
             {isFree && !user ? (
               <>
                 <Link href={`/signup?next=/modules/${mod.slug}`} className="mt-4 inline-block rounded-full bg-amber-400 px-5 py-2.5 text-sm font-bold text-black">Download exercise (.md) — Free with account</Link>
@@ -113,7 +118,7 @@ async function ModuleInner({ params }: { params: Promise<{ slug: string }> }) {
             <div className="mt-5 flex flex-wrap gap-3 items-start">
               {slug === "prompting-like-a-manager" && <TrialButton loggedIn={Boolean(user)} />}
               <BuyButtons slug={mod.slug} loggedIn={Boolean(user)} stripeConfigured={isStripeModulesConfigured} />
-              {!user && <Link href={`/signup?next=/modules/${mod.slug}`} className="rounded-full border border-white/20 px-5 py-2.5 text-sm font-bold">Create free account first</Link>}
+              {!user && <Link href={`/signup?next=/modules/${mod.slug}`} className="rounded-full border border-white/20 px-5 py-2.5 text-sm font-bold">Create free account first</Link>}<Link href="/modules#team-quote" className="rounded-full border border-white/20 px-5 py-2.5 text-sm font-bold">Buying for a team? Request a team quote</Link>
             </div>
           </div>
         </div>

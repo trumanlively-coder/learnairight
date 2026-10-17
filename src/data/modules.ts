@@ -3,6 +3,7 @@ export type TrainingModule = {
   slug: string; order: number; title: string; difficulty: string; duration: string;
   summary: string; outcomes: string[]; videoSlots: number;
   paid: boolean; sections: ModuleSection[]; exerciseTitle: string; exercise: string; starterPrompt?: string;
+  audience: string; measure: string;
   // Optional real embed for Lesson 1 only (Module 1). Other slots stay placeholders.
   videoEmbedUrl?: string; videoTitle?: string; videoChannel?: string; videoDuration?: string; videoWatchUrl?: string;
 };
@@ -12,9 +13,9 @@ export const BUNDLE_PRICE = 99; // placeholder USD, includes Premium
 export const modules: TrainingModule[] = [
   {
     slug: "ai-for-beginners", order: 1, title: "AI for Beginners", difficulty: "Beginner", duration: "~45 min",
-    summary: "Start here. What an AI assistant actually is, how to ask your first useful questions, and how to spot a bad answer before it costs you time.",
-    outcomes: ["Explain in plain English what an AI assistant can and cannot do", "Write a clear first prompt with context, task, and format", "Check an AI answer before you act on it"],
-    videoSlots: 2, paid: false,
+    summary: "The foundations and diagnostic entry point. Establish what an AI assistant can and cannot do, set verification red lines for client and business data, and produce a first prompt that meets a defined standard.",
+    outcomes: ["State, in plain operational terms, where AI output is safe to use and where human verification is mandatory", "Write a first prompt with role, context, task, format, and explicit exclusions", "Apply a repeat check for facts, names, numbers, and claims before any output is used"],
+    videoSlots: 2, paid: false, audience: "Team members with no formal AI training, managers assessing training depth, and independent professionals standardising a first workflow.", measure: "Track prompts that produced usable first drafts, and verification catches per session. Target: a saved, job-specific prompt that passes review on first use.",
     videoEmbedUrl: "https://www.youtube-nocookie.com/embed/qYNweeDHiyU",
     videoTitle: "AI, Machine Learning, Deep Learning and Generative AI Explained",
     videoChannel: "IBM Technology",
@@ -31,9 +32,9 @@ export const modules: TrainingModule[] = [
   },
   {
     slug: "prompting-like-a-manager", order: 2, title: "Prompting Like a Manager", difficulty: "Beginner+", duration: "~60 min",
-    summary: "Stop chatting, start delegating. Brief the AI like a good manager: goal, context, constraints, examples, and a definition of done — then review and iterate instead of starting over.",
-    outcomes: ["Write briefs that get usable first drafts", "Use examples to lock in tone and format", "Iterate with targeted feedback instead of 'make it better'"],
-    videoSlots: 1, paid: true,
+    summary: "Replace casual chat with management-grade briefs. Define goal, context, constraints, examples, and a definition of done, then review against that brief instead of regenerating at random.",
+    outcomes: ["Write briefs that produce reviewable first drafts for recurring work", "Use approved examples to hold tone and format consistent across people", "Reduce revision cycles with targeted, brief-based feedback"],
+    videoSlots: 1, paid: true, audience: "Team leads, managers, and practitioners whose prompts currently produce inconsistent drafts.", measure: "Track revision count and time-to-acceptable-draft before and after adopting the brief format.",
     sections: [
       { heading: "1. The manager's brief", body: "Managers who get great work give five things: the goal, the background, the constraints, an example of good, and what 'done' looks like. AI responds the same way. Replace 'write an email about the delay' with a brief that includes the audience, the facts it may use, the length, the tone, and the call to action.", steps: ["Take your vaguest recent prompt and add goal, context, constraints", "Add one sentence defining done: 'Done = under 120 words, includes the new date, ends with a reply request'", "Save the result as a reusable template with [brackets] for the parts that change"] },
       { heading: "2. Show, don't just tell", body: "One real example beats ten adjectives. Paste a caption, email, or review reply you liked and say 'match this voice'. If you cannot share real customer data, invent a small sample — and remove names, phone numbers, and anything private before pasting.", steps: ["Collect two samples of writing you like", "Ask the AI to describe the voice in three bullet points", "Have it draft something new using that voice sheet, then edit it into your own words"] },
@@ -44,9 +45,9 @@ export const modules: TrainingModule[] = [
   },
   {
     slug: "ai-workflows-for-your-business", order: 3, title: "AI Workflows for Your Shop / Business", difficulty: "Intermediate", duration: "~75 min",
-    summary: "Turn one-off prompts into a weekly system: content, messages, reviews, and admin that run on templates you approve — built for a one-person or small-team business.",
-    outcomes: ["Map your weekly repeat tasks and pick the three worth systematising", "Build a small library of approved prompt templates", "Set an approve-before-it-goes-out rule that keeps quality up"],
-    videoSlots: 1, paid: true,
+    summary: "Convert repeat weekly work into an approved workflow system. Map recurring tasks, build a governed template library, and set the human approval rule that keeps quality and client data under control.",
+    outcomes: ["Identify the repeat tasks with the highest time cost and lowest variation", "Build approved templates with must-include facts and a do-not-say list", "Operate an AI-drafts, human-approves rule with a simple output log"],
+    videoSlots: 1, paid: true, audience: "Small-team operators, office managers, and independent professionals carrying recurring content, messaging, and admin load.", measure: "Track minutes per task and approval rate per template across two weekly cycles.",
     sections: [
       { heading: "1. Map the week, find the repeats", body: "List everything you wrote or answered last week: captions, DMs, quotes, reminders, review replies. Anything that repeats three or more times is workflow material. Rank by time spent × how standard the answer is — start with the most standard, not the most creative.", steps: ["Write down last week's repeated writing and admin tasks", "Score each: minutes per time × times per week", "Circle the top three with the most standard answers"] },
       { heading: "2. Build the template library", body: "For each winner, make one template: the brief (Module 2), a voice sample, the must-include facts, and a short checklist. Store them where you will actually open them — a notes doc is fine. A template is finished when someone else could run it and get a draft you would accept.", steps: ["Create one template per circled task", "Add a do-not-say list (prices, promises, policies the AI must not invent)", "Run each template once on a real task and fix what it got wrong"] },
@@ -57,9 +58,9 @@ export const modules: TrainingModule[] = [
   },
   {
     slug: "automate-the-boring-stuff", order: 4, title: "Automate the Boring Stuff", difficulty: "Intermediate+", duration: "~90 min",
-    summary: "Connect the dots safely: summaries, follow-ups, lists, and reminders on rails — what to automate, what to keep manual, and how to avoid automating a mistake at scale.",
-    outcomes: ["Tell the difference between a template, an assistant, and an automation", "Draft three safe automations with clear human checkpoints", "Spot the tasks you should never fully automate"],
-    videoSlots: 1, paid: true,
+    summary: "Add automation only where reliability is already proven. Classify work by leverage level, define human checkpoints and stop rules, and identify the tasks that must never run unattended.",
+    outcomes: ["Classify tasks as template, assisted, or automated, with a justification for each level", "Design automations that end in a reviewed draft, not an irreversible action", "Document a never-automate list based on the cost of a single wrong output"],
+    videoSlots: 1, paid: true, audience: "Practitioners and operators ready to scale a proven workflow without scaling its errors.", measure: "Track checkpoint catches, stop-rule triggers, and time returned per automation each week.",
     sections: [
       { heading: "1. Three levels of leverage", body: "Level 1 is a template you run by hand. Level 2 is an assistant you brief each time. Level 3 is an automation that triggers itself. Move up a level only when the step below is boringly reliable — automating an unreliable draft just produces mistakes faster and at larger scale.", steps: ["Classify five of your tasks by level", "Name the checkpoint where a human still looks at Level 3 output", "Pick one Level 1 template that is ready to become Level 2"] },
       { heading: "2. Safe first automations", body: "Good early candidates: summarising long messages into action lists, turning notes into follow-up drafts, building checklists from a brief, and reformatting the same information for different places. Each ends with a draft for you — not a sent message, a booked job, or a changed record.", steps: ["Write the trigger, the input, and the exact output format for one automation", "Add the stop rule: what makes it ask you instead of finishing", "Test it on three messy real examples before trusting the tidy one"] },
@@ -70,9 +71,9 @@ export const modules: TrainingModule[] = [
   },
   {
     slug: "grokbot-deep-dive", order: 5, title: "Grokbot Deep Dive", difficulty: "Advanced", duration: "~90 min",
-    summary: "Go deeper with Grokbot-style assistants: longer projects, better questions, research habits, and building a personal playbook. LearnAIRight is an independent guide — not affiliated with or endorsed by xAI/Grok.",
-    outcomes: ["Run a multi-step project in one thread without losing the thread", "Ask research questions that surface sources and uncertainty", "Keep a personal playbook of prompts that actually worked"],
-    videoSlots: 2, paid: true,
+    summary: "Run longer, multi-step work with discipline. Structure projects in a single thread, demand sources and counter-arguments in research, and maintain a playbook that turns individual skill into shared team capability. LearnAIRight is an independent guide, not affiliated with or endorsed by xAI/Grok.",
+    outcomes: ["Run a multi-part project from an approved plan without losing context or decisions", "Test research claims against opened sources and record what remains unverified", "Maintain a playbook whose entries can be promoted into team templates"],
+    videoSlots: 2, paid: true, audience: "Advanced practitioners, team leads building shared standards, and independent professionals running research-heavy or multi-part projects.", measure: "Track sourced claims verified, playbook entries promoted to team templates, and rework avoided per project.",
     sections: [
       { heading: "1. Run projects, not chats", body: "For anything bigger than one answer, open with a project brief: the outcome, the pieces you need, the order, and how you will judge each piece. Work piece by piece in the same conversation so the assistant keeps context, and ask it to restate the plan before starting each new piece.", steps: ["Write a project brief for something real (a month of content, a price review, a hiring post)", "Ask for a plan first — approve or fix it before any drafting", "Close each piece with 'summarise what we decided' and save that summary"] },
       { heading: "2. Research without fooling yourself", body: "Ask for claims with sources, for the strongest counter-argument, and for what is still unknown. Follow at least one source yourself before repeating a fact. A confident tone is not evidence; a checkable link you actually opened is much closer to it.", steps: ["Ask one question three ways: answer, counter-argument, unknowns", "Open one cited source and confirm it says what was claimed", "Keep a two-column note: 'AI said' vs 'I verified'"] },
