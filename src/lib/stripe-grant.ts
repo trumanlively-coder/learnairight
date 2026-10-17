@@ -26,6 +26,6 @@ export async function verifyAndGrantCheckoutSession(sessionId: string, expectedU
   if (plan === "single" && (!slug || !getModule(slug)?.paid)) return { ok: false, error: "Session has no valid module." };
   const amountCents = session.amount_total ?? (plan === "bundle" ? BUNDLE_PRICE * 100 : SINGLE_PRICE * 100);
   const r = grantStripePurchaseByEmail(email, plan, slug, amountCents, session.id);
-  if (!r.user) return { ok: false, error: "No local account matches the purchasing email — sign up with that email, then contact Tru." };
+  if (!r.user) return { ok: false, error: "No local account matches the purchasing email — sign up with that email, then contact support." };
   return { ok: true, granted: !r.alreadyGranted, alreadyGranted: r.alreadyGranted, plan, slug };
 }

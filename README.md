@@ -1,12 +1,12 @@
-# LearnAIRight — Learn AI Right, with Tru
+# LearnAIRight
 
-**Brand (applied 16 Oct 2026): LearnAIRight** — display name "Learn AI Right — with Tru". A multi-page hub by **Tru** teaching people to use AI correctly — especially Grokbot — with practical tips and **real, sourced** success stories. Tru is the person/face behind it: a Las Vegas barber who builds AI tools — that's his story (see About), not the master brand, so the brand can reach a national/international audience.
+**Brand (applied 16 Oct 2026): LearnAIRight** — display name "Learn AI Right". A multi-page hub for AI fluency for teams and independent professionals, with practical tips and **real, sourced** success stories. Positioning is site-perspective and workflow-first: repeatable workflows with measured outcomes, not hype.
 
-**Palette (documented choice):** keeping the existing warm charcoal (`#0f0e0c`) + amber (`#f59e0b`/amber-400) palette, now re-labelled as LearnAIRight's palette — amber = the "right/correct" highlight/check accent on charcoal, clean and readable. No logo/typeface lockup yet — Tru to confirm final logo. Folder on disk stays `/workspace/tru-ai-hub` (internal only; `package.json` name is now `learnairight`).
+**Palette (documented choice):** keeping the existing warm charcoal (`#0f0e0c`) + amber (`#f59e0b`/amber-400) palette, now re-labelled as LearnAIRight's palette — amber = the "right/correct" highlight/check accent on charcoal, clean and readable. No logo/typeface lockup yet — final logo to be confirmed. The folder on disk retains its internal name (unchanged; `package.json` name is `learnairight`).
 
 > Independent guide — not affiliated with or endorsed by xAI/Grok. Do not use "Grok"/"Grokbot" in the domain or logo.
 
-> **Status: READY WHEN YOU ARE.** Built and verified locally. **Not deployed, not public, no real payments, no emails sent.** Sponsor + premium flows are intake/mock until Tru approves launch and adds real keys.
+> **Status: READY WHEN YOU ARE.** Built and verified locally. **Not deployed, not public, no real payments, no emails sent.** Sponsor + premium flows are intake/mock until launch is approved and real keys are added.
 
 ## Pages
 | Route | What it is |
@@ -14,7 +14,7 @@
 | `/` | Home — hero, sponsor placeholder, featured tips/stories, premium CTA |
 | `/tips` | Free AI tips (prompting, workflows, real-world use) + premium teasers |
 | `/stories` | 12 curated success stories, each with summary, outcome, takeaway, and source link |
-| `/about` | About Tru (placeholder bio — replace with real story/photo/shop details) |
+| `/about` | About — positioning, method, and standards |
 | `/pricing` | Free vs Premium + sponsor slots (placeholder/example) + sponsor inquiry form |
 | `/premium` | Gated premium guides (Grokbot workflows, prompt library, automation blueprints) |
 | `/admin/sponsors` | **Admin (password-gated)** — review sponsor requests, all `pending_approval` |
@@ -56,7 +56,7 @@ All 12 live in `src/data/stories.ts` with source name/date/URL on each card:
 
 
 ## Training modules (added Oct 2026 — local/mock, NOT deployed)
-Ladder in `src/data/modules.ts` (edit titles/prices/content there). Placeholder pricing — Tru to confirm:
+Ladder in `src/data/modules.ts` (edit titles/prices/content there). Placeholder pricing — to be confirmed:
 1. **AI for Beginners** — FREE, open to everyone (no account needed), 2 video slots.
 2. **Prompting Like a Manager** — paid; also the free-trial module (see below).
 3. **AI Workflows for Your Shop / Business** — paid.
@@ -64,7 +64,7 @@ Ladder in `src/data/modules.ts` (edit titles/prices/content there). Placeholder 
 5. **Grokbot Deep Dive** — paid (independent guide, not affiliated with xAI).
 
 - **Single Module Pass ~$29** (placeholder): unlocks one chosen paid module. **All-Access Bundle ~$99** (placeholder): all modules **plus Premium** (`/premium` accepts bundle accounts as well as the legacy mock premium cookie).
-- Each module page has clearly marked **video placeholder slots** ("Video coming soon — Tru to add URL" — no fake embeds), a real written guide, and a **downloadable Markdown exercise worksheet** served by `/api/modules/[slug]/download`, which re-checks access server-side on every request (403 when locked).
+- Each module page has clearly marked **video placeholder slots** ("Video coming soon — embed URL to be configured" — no fake embeds), a real written guide, and a **downloadable Markdown exercise worksheet** served by `/api/modules/[slug]/download`, which re-checks access server-side on every request (403 when locked).
 - Locked paid modules show outcomes + a greyed-out lesson list (title + lock + **"Included in All-Access · or $29 Single Pass"** only) + buy/trial CTAs — never guide bodies, steps, or the exercise (verified by grepping the locked response for guide text).
 - **Conversion tweaks (Oct 2026):** Module 1 Lesson 1 is **instant — no account** (first video slot + first guide section + in-page exercise start). Only (a) the Module 1 exercise **download** (`/api/modules/[slug]/download` returns 401 `needsAuth` for anonymous on the free module; any logged-in account may download), (b) **saved progress/prompts**, and (c) the Module 2 trial require a free account. No credit card anywhere until (mock) purchase.
 - **First-win checklist** on Module 1 (`FirstWinChecklist`, ~10–15 min, 5 steps): watch Lesson 1 → copy the starter prompt (`starterPrompt` in `modules.ts`) → adapt it in-page → **save it to the account** → Module 2 trial CTA. Anonymous ticks/draft persist only in `localStorage`; logged-in saves go server-side via `POST /api/modules/progress` into `user.firstWin` in `data/users.json` and show under **"My saved prompts"** on `/modules`, ending in the "You saved your first working prompt" state.
@@ -74,12 +74,12 @@ Ladder in `src/data/modules.ts` (edit titles/prices/content there). Placeholder 
 - **Free trial:** signed-in users hit "Start your free trial" → `POST /api/trial/start` sets `trialEndsAt` = now + 7 days and unlocks **Module 2 only**. No account = Module 1 only.
 - **Mock checkout:** `POST /api/modules/purchase` records entitlements on the user (`entitlements[]` for single, `bundle: true` for all-access) and appends a row to `data/subscribers.json` (**gitignored**). The UI labels this "Mock checkout — no card, no charge" everywhere. If Stripe keys are ever present this route currently **refuses (501)** rather than faking a charge — wire real Stripe Products there first (suggested names: "LearnAIRight Single Module Pass", "LearnAIRight All-Access Bundle") and grant entitlements from the webhook (TODO marked in the route).
 - **Admin:** `/admin/subscribers` (same `ADMIN_PASSWORD` gate as sponsors; links between the two admin pages) lists email, plan (`trial` / `single:<slug>` / `bundle` / `premium`), mock amount, status, start/expiry. Empty state until someone signs up. **These JSON files must move to a real database before launch** (same note as sponsors).
-- Decisions needed from Tru: final module prices ($29/$99 placeholders), final module titles/order, real video URLs for every placeholder slot, Stripe product names/prices, and a real DB + email/password-reset flow before public launch.
+- Decisions still needed: final module prices ($29/$99 placeholders), final module titles/order, real video URLs for every placeholder slot, Stripe product names/prices, and a real DB + email/password-reset flow before public launch.
 
 ## Sponsors (intake/display only — no charging)
 - Form on `/pricing` → `POST /api/sponsors` → appended to `data/sponsors.json` with `status: "pending_approval"`.
 - `/admin/sponsors` lists requests and is **password-gated** (see Admin auth below). Anyone without the session is redirected to `/admin/login`, and `GET /api/sponsors` returns 401 unauthenticated.
-- Placeholder/example sponsor slots are clearly labelled AVAILABLE/EXAMPLE. Nothing auto-publishes; Tru must manually approve and add a sponsor to the site.
+- Placeholder/example sponsor slots are clearly labelled AVAILABLE/EXAMPLE. Nothing auto-publishes; the site operator must manually approve and add a sponsor to the site.
 
 ## Admin auth (sponsor admin)
 
@@ -89,16 +89,16 @@ Ladder in `src/data/modules.ts` (edit titles/prices/content there). Placeholder 
 - **Local dev:** put `ADMIN_PASSWORD=<strong-random>` in `.env.local` (gitignored; generate with `openssl rand -base64 32`), restart `npm run dev`, then visit http://localhost:3000/admin/sponsors and sign in.
 - **Production (Vercel):** set `ADMIN_PASSWORD` in Project → Settings → Environment Variables (Production) **before** real traffic, then redeploy. This is a simple single-password gate for the stub stage — upgrade to real user auth (e.g. NextAuth) before scaling.
 
-## Premium + Stripe (placeholder/mock until Tru adds keys)
+## Premium + Stripe (placeholder/mock until keys are added)
 - `src/lib/stripe.ts` reads `STRIPE_SECRET_KEY` / `STRIPE_PRICE_ID`. `sk_test_placeholder…` values are treated as **not configured** → mock mode.
-- Mock mode: checkout button → `/checkout/success?mock=1`; "mock unlock" sets an `learnairight_premium` httpOnly cookie so Tru can preview gated content. **No money moves.**
-- To go live (Tru only): create Stripe account + recurring Product/Price, put TEST keys in `.env.local`, `stripe listen --forward-to localhost:3000/api/stripe/webhook`, test, then implement webhook entitlement (replace cookie with DB-backed user entitlements — TODOs marked in `src/app/api/stripe/webhook/route.ts`), add real auth, then swap to live keys.
+- Mock mode: checkout button → `/checkout/success?mock=1`; "mock unlock" sets an `learnairight_premium` httpOnly cookie so gated content can be previewed. **No money moves.**
+- To go live (site operator only): create Stripe account + recurring Product/Price, put TEST keys in `.env.local`, `stripe listen --forward-to localhost:3000/api/stripe/webhook`, test, then implement webhook entitlement (replace cookie with DB-backed user entitlements — TODOs marked in `src/app/api/stripe/webhook/route.ts`), add real auth, then swap to live keys.
 
-## Deploy (when Tru explicitly approves — do NOT deploy before)
+## Deploy (only on explicit approval — do NOT deploy before)
 1. Push to a private GitHub repo. 2. Import into Vercel, framework = Next.js. 3. Set env vars from `.env.example` in Vercel (production). 4. Add custom domain in Vercel + DNS. 5. Point Stripe webhook to `https://YOURDOMAIN/api/stripe/webhook`. 6. Set `ADMIN_PASSWORD` in Vercel env vars (gates `/admin/*`; see Admin auth). Managed DB (e.g. Postgres/Supabase) should replace `data/sponsors.json`, `data/users.json`, and `data/subscribers.json` before real traffic.
 
-## Decisions Tru needs to make
-- **Branding:** name is now **LearnAIRight / "Learn AI Right — with Tru"** (applied Oct 2026). Still to decide: final logo/typeface, Tru's photo, shop name & booking link. Colors: charcoal + amber retained as the LearnAIRight palette (see top of README). Domain/social handles NOT yet registered — see availability research reported to Tru 16 Oct 2026; register learnairight.com (+ .ai defensive) and claim handles only on Tru's approval.
+## Decisions still needed
+- **Branding:** name is **LearnAIRight / "Learn AI Right"** (applied Oct 2026). Still to decide: final logo/typeface. Colors: charcoal + amber retained as the LearnAIRight palette (see top of README). Domain/social handles NOT yet registered; register learnairight.com (+ .ai defensive) and claim handles only on approval.
 - **Pricing:** Premium $/mo & $/yr (currently $9/$79 placeholders) and sponsor rates (currently $150/$75/$250 placeholders).
 - **Domain + hosting:** domain choice; Vercel assumed.
 - **Stripe:** when to create account, test vs live keys, tax/refund policy.
@@ -111,7 +111,7 @@ src/components/{Nav,Footer,SponsorForm,CheckoutButton,MockUnlock,ModuleActions,A
 src/data/{stories,tips,modules}.ts   src/lib/{stripe,sponsors,admin-auth,users,user-auth}.ts   src/proxy.ts   data/{sponsors,users,subscribers}.json (all gitignored)   .env.example
 ```
 
-## Push to GitHub (Tru — one-time, after you create your GitHub account)
+## Push to GitHub (one-time setup)
 
 This repo has been pushed to https://github.com/trumanlively-coder/learnairight (public, `main`). The instructions below are kept for reference / a fresh machine.
 
@@ -131,4 +131,4 @@ This repo has been pushed to https://github.com/trumanlively-coder/learnairight 
    ```
 4. After that, normal updates are just: `git add . && git commit -m "your message" && git push`
 
-Do not deploy to Vercel yet — that's a separate, later step after Tru approves it.
+Do not deploy to Vercel yet — that is a separate, later step requiring explicit approval.
