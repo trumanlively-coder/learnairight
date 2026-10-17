@@ -49,3 +49,6 @@ next-env.d.ts
 # sponsor inquiries contain contact emails — never commit real submissions
 data/sponsors.json
 *.log
+# user accounts (emails + password hashes) and subscriber records — never commit
+data/users.json
+data/subscribers.json

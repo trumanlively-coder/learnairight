@@ -27,7 +27,7 @@ async function AdminInner() {
         <h1 className="text-4xl font-black">Admin — Sponsor Requests</h1>
         <form method="post" action="/api/admin/logout"><button className="rounded-full border border-white/20 px-5 py-2 text-sm font-bold">Log out</button></form>
       </div>
-      <p className="mt-2 text-emerald-200 text-sm rounded-xl bg-emerald-400/10 border border-emerald-400/20 px-4 py-3">🔒 You are signed in. Every request below is <b>pending_approval</b> by default; approving/publishing a sponsor is a manual decision for Tru (no code here auto-publishes).</p>
+      <p className="mt-3 text-sm text-zinc-400"><b className="text-white">Sponsor requests</b> · <a className="text-amber-400 underline" href="/admin/subscribers">Subscribers</a></p><p className="mt-2 text-emerald-200 text-sm rounded-xl bg-emerald-400/10 border border-emerald-400/20 px-4 py-3">🔒 You are signed in. Every request below is <b>pending_approval</b> by default; approving/publishing a sponsor is a manual decision for Tru (no code here auto-publishes).</p>
       {list.length === 0 ? (
         <p className="mt-8 text-zinc-400">No sponsor requests yet. Submit one via <a className="underline" href="/pricing">/pricing</a> to test. Stored in <code>data/sponsors.json</code>.</p>
       ) : (
