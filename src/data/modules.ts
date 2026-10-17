@@ -2,7 +2,7 @@ export type ModuleSection = { heading: string; body: string; steps: string[] };
 export type TrainingModule = {
   slug: string; order: number; title: string; difficulty: string; duration: string;
   summary: string; outcomes: string[]; videoSlots: number;
-  paid: boolean; sections: ModuleSection[]; exerciseTitle: string; exercise: string;
+  paid: boolean; sections: ModuleSection[]; exerciseTitle: string; exercise: string; starterPrompt?: string;
 };
 export const TRIAL_MODULE_SLUG = "prompting-like-a-manager";
 export const SINGLE_PRICE = 29; // placeholder USD
@@ -18,6 +18,7 @@ export const modules: TrainingModule[] = [
       { heading: "2. Your first good prompt", body: "Weak prompts get weak answers. A reliable starter shape is: role + situation + task + format. For example: 'You are an experienced shop manager. I run a small barbershop. Write a short Instagram caption for a Saturday walk-in special. Keep it under 40 words, friendly, no hype.'", steps: ["Pick one real task you did this week", "Rewrite it with role, situation, task, and format", "Ask for two versions and pick the better one — then say why"] },
       { heading: "3. Trust, but verify", body: "AI is best at drafts, summaries, ideas, and checklists. It is weakest at exact facts, prices, dates, rules, and anything you cannot quickly check. Build a habit: ask 'what should I double-check here?', verify names/numbers against a source you trust, and keep a human as the approver.", steps: ["Have the AI summarise something, then check three claims against the original", "Ask it to flag its own uncertain statements — then verify those first", "Decide your personal red list: things you will never publish or send without checking"] },
     ],
+    starterPrompt: "You are an experienced [your role, e.g. shop manager]. I [your situation — your job/shop, who this is for, and any facts it may use]. Write [the task, e.g. a short Instagram caption for a Saturday walk-in special]. Keep it [length/format, e.g. under 40 words], [tone, e.g. friendly], and do not [anything to avoid, e.g. invent prices].",
     exerciseTitle: "Exercise 1 — Your First Three Prompts",
     exercise: "# LearnAIRight — Module 1: AI for Beginners\n## Exercise: Your First Three Prompts\n\n1. Rewrite a vague ask. Take 'write me a post' and rewrite it using role + situation + task + format.\n\n   My rewrite: ______________________________________________\n\n2. Run it twice. Change one detail (tone or length). Which version is better, and why?\n\n   Better version: ______  Because: ___________________________\n\n3. Verify. List three facts in the answer and check each against a source you trust.\n\n   - Fact: __________________  Checked? ☐  Correct? ☐\n   - Fact: __________________  Checked? ☐  Correct? ☐\n   - Fact: __________________  Checked? ☐  Correct? ☐\n\n4. My red list (never send/publish without checking):\n\n   ___________________________________________________________\n",
   },

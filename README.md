@@ -65,7 +65,9 @@ Ladder in `src/data/modules.ts` (edit titles/prices/content there). Placeholder 
 
 - **Single Module Pass ~$29** (placeholder): unlocks one chosen paid module. **All-Access Bundle ~$99** (placeholder): all modules **plus Premium** (`/premium` accepts bundle accounts as well as the legacy mock premium cookie).
 - Each module page has clearly marked **video placeholder slots** ("Video coming soon — Tru to add URL" — no fake embeds), a real written guide, and a **downloadable Markdown exercise worksheet** served by `/api/modules/[slug]/download`, which re-checks access server-side on every request (403 when locked).
-- Locked paid modules show outcomes + section headings + buy/trial CTAs only — never the full guide or exercise.
+- Locked paid modules show outcomes + a greyed-out lesson list (title + lock + **"Included in All-Access · or $29 Single Pass"** only) + buy/trial CTAs — never guide bodies, steps, or the exercise (verified by grepping the locked response for guide text).
+- **Conversion tweaks (Oct 2026):** Module 1 Lesson 1 is **instant — no account** (first video slot + first guide section + in-page exercise start). Only (a) the Module 1 exercise **download** (`/api/modules/[slug]/download` returns 401 `needsAuth` for anonymous on the free module; any logged-in account may download), (b) **saved progress/prompts**, and (c) the Module 2 trial require a free account. No credit card anywhere until (mock) purchase.
+- **First-win checklist** on Module 1 (`FirstWinChecklist`, ~10–15 min, 5 steps): watch Lesson 1 → copy the starter prompt (`starterPrompt` in `modules.ts`) → adapt it in-page → **save it to the account** → Module 2 trial CTA. Anonymous ticks/draft persist only in `localStorage`; logged-in saves go server-side via `POST /api/modules/progress` into `user.firstWin` in `data/users.json` and show under **"My saved prompts"** on `/modules`, ending in the "You saved your first working prompt" state.
 
 ### Accounts, trial, and mock purchases (no real payments)
 - `/signup` + `/login`: email + password (min 8 chars), hashed with Node `crypto.scrypt` + random salt (never plaintext), stored in `data/users.json` (**gitignored — contains emails**). Session = `learnairight_user` httpOnly cookie, HMAC-signed like the admin cookie (secret: optional `USER_SESSION_SECRET`, falling back to `ADMIN_PASSWORD`, then a local-dev-only constant — set a real one before launch).
@@ -104,8 +106,8 @@ Ladder in `src/data/modules.ts` (edit titles/prices/content there). Placeholder 
 
 ## File structure
 ```
-src/app/{page,tips,stories,about,pricing,premium,modules,modules/[slug],signup,login,admin/{login,sponsors,subscribers},checkout/{success,cancel},api/{sponsors,admin/{login,logout},auth/{signup,login,logout},trial/start,modules/{purchase,[slug]/download},checkout,stripe/webhook,premium/mock-activate}}
-src/components/{Nav,Footer,SponsorForm,CheckoutButton,MockUnlock,ModuleActions,AuthForm}.tsx
+src/app/{page,tips,stories,about,pricing,premium,modules,modules/[slug],signup,login,admin/{login,sponsors,subscribers},checkout/{success,cancel},api/{sponsors,admin/{login,logout},auth/{signup,login,logout},trial/start,modules/{purchase,progress,[slug]/download},checkout,stripe/webhook,premium/mock-activate}}
+src/components/{Nav,Footer,SponsorForm,CheckoutButton,MockUnlock,ModuleActions,AuthForm,FirstWinChecklist}.tsx
 src/data/{stories,tips,modules}.ts   src/lib/{stripe,sponsors,admin-auth,users,user-auth}.ts   src/proxy.ts   data/{sponsors,users,subscribers}.json (all gitignored)   .env.example
 ```
 

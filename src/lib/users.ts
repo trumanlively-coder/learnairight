@@ -3,10 +3,12 @@ import fs from "fs";
 import path from "path";
 // Local/mock account + subscriber stores. Files contain emails + password
 // hashes and are gitignored (see .gitignore). Move to a real DB before launch.
+export type FirstWinProgress = { steps: number[]; prompt: string; completedAt: string | null; updatedAt: string };
 export type User = {
   id: string; email: string; passwordHash: string; // "salt:hash" scrypt, never plaintext
   entitlements: string[]; // paid module slugs
   bundle: boolean; trialEndsAt: string | null; createdAt: string;
+  firstWin?: FirstWinProgress; // Module 1 first-win checklist + saved prompt (the lock-in library seed)
 };
 export type Subscriber = {
   id: string; email: string; plan: string; // trial | single:<slug> | bundle | premium
@@ -52,5 +54,13 @@ export function recordPurchase(user: User, plan: "single" | "bundle", slug: stri
   saveUser(updated);
   addSubscriber({ email: user.email, plan: plan === "bundle" ? "bundle" : `single:${slug}`, amount, status: "active_mock", startsAt: new Date().toISOString(), expiresAt: null });
   return updated;
+}
+export function saveFirstWinProgress(user: User, steps: number[], prompt: string): User {
+  const cleanPrompt = String(prompt || "").slice(0, 2000);
+  const cleanSteps = [...new Set((Array.isArray(steps) ? steps : []).map(Number).filter((n) => Number.isInteger(n) && n >= 1 && n <= 5))].sort((a, b) => a - b);
+  if (cleanPrompt.trim() && !cleanSteps.includes(4)) cleanSteps.push(4);
+  const completedAt = cleanPrompt.trim() ? (user.firstWin?.completedAt || new Date().toISOString()) : (user.firstWin?.completedAt || null);
+  const updated = { ...user, firstWin: { steps: cleanSteps.sort((a, b) => a - b), prompt: cleanPrompt, completedAt, updatedAt: new Date().toISOString() } };
+  saveUser(updated); return updated;
 }
 export const isTrialActive = (u: User | null) => Boolean(u?.trialEndsAt && new Date(u.trialEndsAt).getTime() > Date.now());
