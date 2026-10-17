@@ -22,7 +22,7 @@ function VideoEmbed({ embedUrl, title, channel, duration, watchUrl, lessonLabel 
 function VideoPlaceholder({ n, lessonLabel }: { n: number; lessonLabel?: string }) {
   return (
     <div className="flex aspect-video items-center justify-center rounded-3xl border border-dashed border-amber-400/40 bg-white/5 text-center px-6">
-      <div><p className="text-3xl">▶</p>{lessonLabel && <p className="mt-2 text-xs font-bold tracking-widest text-amber-400">{lessonLabel}</p>}<p className="mt-2 font-bold">Video {n} coming soon — Tru to add URL</p><p className="text-sm text-zinc-400">Placeholder embed slot. No video is loaded here yet.</p></div>
+      <div><p className="text-3xl">▶</p>{lessonLabel && <p className="mt-2 text-xs font-bold tracking-widest text-amber-400">{lessonLabel}</p>}<p className="mt-2 font-bold">Video {n} placeholder — embed URL to be configured</p><p className="text-sm text-zinc-400">Placeholder embed slot. No video is loaded here yet.</p></div>
     </div>
   );
 }
@@ -48,6 +48,12 @@ async function ModuleInner({ params }: { params: Promise<{ slug: string }> }) {
         <p className="mt-3 text-sm text-zinc-300"><b>Who this serves:</b> {mod.audience}</p>
         <p className="mt-2 text-sm text-zinc-300"><b>Outcome to track:</b> {mod.measure}</p>
       </div>
+      {mod.creditNote && (
+        <div className="mt-6 rounded-3xl border border-amber-400/30 bg-amber-400/5 p-6">
+          <p className="text-xs font-bold tracking-widest text-amber-400">BEFORE TEAM ROLLOUT — ESTIMATE THE CREDIT COST</p>
+          <p className="mt-2 text-sm text-zinc-300">{mod.creditNote}</p>
+        </div>
+      )}
       <div className="mt-6 rounded-3xl border border-white/10 p-6">
         <h2 className="font-bold">What completion looks like</h2>
         <ul className="mt-2 list-disc pl-5 space-y-1 text-zinc-300">{mod.outcomes.map((o) => <li key={o}>{o}</li>)}</ul>
