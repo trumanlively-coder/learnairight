@@ -13,7 +13,7 @@
 |---|---|
 | `/` | Home — hero, sponsor placeholder, featured tips/stories, premium CTA |
 | `/tips` | Free AI tips (prompting, workflows, real-world use) + premium teasers |
-| `/stories` | 12 curated success stories, each with summary, outcome, takeaway, and source link |
+| `/stories` | 11 curated success stories, each with summary, outcome, takeaway, and source link |
 | `/about` | About — positioning, method, and standards |
 | `/pricing` | Free vs Premium + sponsor slots (placeholder/example) + sponsor inquiry form |
 | `/premium` | Gated premium guides (Grokbot workflows, prompt library, automation blueprints) |
@@ -40,7 +40,7 @@ npm run build && npm start   # production build check
 No env vars are required to run in mock mode — except `ADMIN_PASSWORD` if you want to open the admin area (see Admin auth below).
 
 ## Success stories — sources (verified Oct 2026, do not fabricate additions)
-All 12 live in `src/data/stories.ts` with source name/date/URL on each card:
+All 11 live in `src/data/stories.ts` with source name/date/URL on each card:
 1. Klarna AI assistant — https://www.klarna.com/international/press/klarna-ai-assistant-handles-two-thirds-of-customer-service-chats-in-its-first-month/
 2. GitHub Copilot 55.8% study — https://arxiv.org/html/2302.06590v1
 3. Morgan Stanley — https://openai.com/index/morgan-stanley/
@@ -52,7 +52,6 @@ All 12 live in `src/data/stories.ts` with source name/date/URL on each card:
 9. Dream Code Labs week experiment — https://www.dreamcodelabs.com/blog/i-asked-ai-to-run-my-business-for-a-week
 10. Gary Sheng blogging — https://wiki.garysheng.com/docs/guides/writing/the-ai-assisted-art-of-blogging-gary-shengs-efficient-workflow-explained
 11. Enid HS / Khanmigo — https://blog.khanacademy.org/how-enid-high-school-transformed-their-math-classrooms-with-ai-a-case-study/
-12. Barber Station (Claire Lawrence) — https://www.sstaffs.gov.uk/news/2025/local-barber-shop-owner-thrives-business-growth-support
 
 
 ## Training modules (added Oct 2026 — local/mock, NOT deployed)
